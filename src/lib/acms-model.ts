@@ -6,6 +6,10 @@ export class BaseModel {
   public getSource(){
     return this.source;
   }
+
+  public get(id) {
+
+  }
 }
 
 /*
@@ -30,5 +34,11 @@ Model.findAll(search?) => [Entidade]
 Model.save()
   => matchSchema()
   =>
+FirebaseDriver()
 
+Model.setDriver(new FirebaseDriver(config.driver));
+
+  driver.setCollection(Model.table);
+
+  driver.get(id);
 */

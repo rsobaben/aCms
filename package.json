@@ -4,7 +4,7 @@
   "description": "a node based project to start admin panels ",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node ./bin/www"
+    "start": "node ./bin/www"
   },
   "repository": {
     "type": "git",

@@ -7,8 +7,7 @@ import * as cookieParser from "cookie-parser";
 import * as compression from "compression";
 
 //defined
-import * as util from './lib/util';
-import * as loader from './lib/loader';
+import {Dispatcher} from './routes/dispatcher';
 
 /**
  * The server class
@@ -42,13 +41,12 @@ export class Server {
     this.app = express();
     // basic config for app to work
     this.config();
-    // myapp lins for app to work
-    this.libs();
+
     // extensions
     this.middlewares();
-    // the routes themselves
-    this.routes();
 
+    // the routes
+    this.routes();
   }
 
   /**
@@ -56,12 +54,12 @@ export class Server {
    */
   public config() {
     // ejs config
-    this.app.set("views", path.join(__dirname, "views"));
+    this.app.set("views", path.join(__dirname, "../views"));
     this.app.set("view engine", "ejs");
 
     this.app.disable('x-powered-by');
     //mount logger
-    this.app.use(logger('dev'));
+    //this.app.use(logger('dev'));
 
     //mount json form parser
     this.app.use(bodyParser.json());
@@ -71,44 +69,35 @@ export class Server {
     this.app.use(cookieParser());
 
     //add static paths
-    this.app.use(express.static(path.join(__dirname, "public")));
+    this.app.use(express.static(path.join(__dirname, "../public")));
 
 
-    /*/ catch 404 and forward to error handler
-    this.app.use(function(err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
-      err.status = 404;
-      next(err);
-    });
-    //error handling
-    this.app.use(errorHandler());
-/*
-    this.app.use(function(req, res, next) {
-      let err = new Error('Not Found');
+    // catch 404 and forward to error handler
+    this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
       err.status = 404;
       next(err);
     });
 
-    this.app.use(function (err, req, res, next) {
+
+    this.app.use( (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
       if(err.status == 404){
         res.status(404);
 
-        res.render('not-found', { title: '404 - Recruta' });
+        res.render('not-found', { title: '404 - Acms' });
       }
       else next(err);
     });
 
-    this.app.use(function(err, req, res, next) {
+    this.app.use( (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
       res.status(err.status || 500);
 
-      if(app.get('env') === 'development') res.json({error: err.message, stack: err.stack });
-      else res.render('server-error', { title: '500 - Recruta' });
+      if (this.app.get('env') === 'development') {
+        res.json({error: err.message, stack: err.stack });
+      } else {
+        res.render('server-error', { title: '500 - Acms' });
+      }
     });
-    */
 
-  }
-  private libs() {
-    this._config['Util'] = util.Util;
-    this._config['Loader'] = loader.Loader;
   }
 
   private middlewares() {
@@ -116,8 +105,11 @@ export class Server {
     this.app.use(compression());
   }
   private routes() {
-    const router: express.Router = express.Router();
+    let router: express.Router;
+    router = express.Router();
 
+    // loadRoutes
+    Dispatcher.dispatch(router);
 
     this.app.use(router);
   }

@@ -223,4 +223,18 @@ export class Util {
   public static validateNumberDecimalSigned(number: string): boolean {
     return /^[\d]{1,15}$/g.test(number);
   }
+
+  /**
+   * merges b object into a
+   *
+   * @param {Object} a
+   * @param {Object} b
+   */
+  public static merge(a: any, b: any) {
+    if (typeof b === 'object')
+    Object.keys(b)
+      .forEach((_key: any) => {
+        a[_key] = b[_key];
+      });
+  }
 }
