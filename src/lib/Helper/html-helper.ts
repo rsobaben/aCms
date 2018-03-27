@@ -170,7 +170,7 @@ export class HtmlHelper{
 
     input = HtmlHelper.input(name, inputAttr, value);
     return `
-       <div${div}>
+       <div ${div}>
             <label for="${inputAttr['id']}">${label}</label>
             ${input}
        </div>`;
