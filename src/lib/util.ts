@@ -1,18 +1,10 @@
 import * as path from "path";
 import * as glob from "glob";
 
-/**
- * Utility class
- *
- * @class Util
- */
+/** Class for utility methods */
 export class Util {
-
   /**
    * List all the files in a given directory
-   *
-   * @class  Util
-   * @method fileList
    * @static
    * @return string[]
    */
@@ -22,9 +14,6 @@ export class Util {
 
   /**
    * Extends Promise to enable spread method!
-   *
-   * @class  Util
-   * @method promiseSpread
    * @static
    * @return void
    * /
@@ -42,9 +31,6 @@ export class Util {
 
   /**
    * Validates a Br-cpf
-   *
-   * @class  Util
-   * @method validateCpf
    * @static
    * @return boolean
    */
@@ -95,9 +81,6 @@ export class Util {
 
   /**
    * Validates a Br-cnpj
-   *
-   * @class  Util
-   * @method validateCnpj
    * @static
    * @param {string} cnpj
    * @return {boolean}
@@ -153,9 +136,6 @@ export class Util {
 
   /**
    * Formats value for mone
-   *
-   * @class  Util
-   * @method formatMoney
    * @static
    * @param {number} value
    * @param {number} places
@@ -182,9 +162,6 @@ export class Util {
 
   /**
    * Format a br-date-like-string input as iso [y-m-dTH:i:s:00Z]
-   *
-   * @class  Util
-   * @method formatDateIso
    * @static
    * @param {string} sDate
    * @return {string}
@@ -198,9 +175,6 @@ export class Util {
 
   /**
    * Format a br-date-like-string input as [y-m-d H:i:s]
-   *
-   * @class  Util
-   * @method formatDate
    * @static
    * @param {string} sDate
    * @return {string}
@@ -214,9 +188,6 @@ export class Util {
 
   /**
    * validates
-   *
-   * @class  Util
-   * @method validateNumberDecimalSigned
    * @param {string} number
    * @return {boolean}
    */
@@ -226,7 +197,6 @@ export class Util {
 
   /**
    * merges b object into a
-   *
    * @param {Object} a
    * @param {Object} b
    */
@@ -236,5 +206,28 @@ export class Util {
       .forEach((_key: any) => {
         a[_key] = b[_key];
       });
+  }
+
+  /**
+   * Short attempt to slugify
+   * @param {string} str
+   * @return {string}
+   */
+  public static slug(str: string) {
+      str = str
+        .replace(/^\s+|\s+$/g, '') // trim
+        .toLowerCase();
+
+      // remove accents, swap ñ for n, etc
+      let from = "àáäâèéëêìíïîòóöôùúüûñç·/-,:;[](){}",
+          to   = "aaaaeeeeiiiioooouuuunc____________";
+      for (let i=0, l=from.length ; i<l ; ++i) {
+        str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+      }
+
+      return str
+        .replace(/[^a-z0-9 _]/g, '') // remove invalid chars
+        .replace(/\s+/g, '_') // collapse whitespace and replace by _
+        .replace(/_+/g, '_'); // collapse underscore
   }
 }

@@ -7,8 +7,8 @@ export class BaseModel {
     return this.source;
   }
 
-  public get(id) {
-
+  public get(id: any) {
+    return id;
   }
 }
 
