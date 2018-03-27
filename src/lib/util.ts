@@ -219,10 +219,15 @@ export class Util {
         .toLowerCase();
 
       // remove accents, swap ñ for n, etc
-      let from = "àáäâèéëêìíïîòóöôùúüûñç·/-,:;[](){}",
-          to   = "aaaaeeeeiiiioooouuuunc____________";
+      let from = "àáäâèéëêìíïîòóöôùúüûñç·/-,:;",
+          to   = "aaaaeeeeiiiioooouuuunc______";
       for (let i=0, l=from.length ; i<l ; ++i) {
         str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+      }
+      // remove regp chars for _
+      let yay = '{}[]()';
+      for (let i=0, l = yay.length; i<l; ++i){
+        str = str.replace(new RegExp('\\'+yay.charAt(i), 'g'), '_');
       }
 
       return str

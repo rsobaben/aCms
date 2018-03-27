@@ -3,11 +3,7 @@
 import { NextFunction, Request, Response } from "express";
 import {Util} from './util';
 
-/**
- * AcmsController base class
- * @class AcmsController
- *
- */
+/** Base class for controller */
 export class AcmsController{
   /**
    * Stores data to be used on view
@@ -16,19 +12,15 @@ export class AcmsController{
 
   /**
    * Constructor
-   *
-   * @class AcmsController
    * @constructor
    */
-  constructor(){
-    this.viewVars = {};
+  constructor() {
+    // sets default values for title and description and a body-class
+    this.viewVars = {title_for_view:'', description_for_view:'', body_class: 'acms-body'};
   }
 
   /**
    * Stores values to be sent to view
-   *
-   * @class  AcmsController
-   * @method set
    * @param a
    * @param b
    */
@@ -41,10 +33,23 @@ export class AcmsController{
   }
 
   /**
+   * sets title for a view
+   * @param {string} title
+   */
+  public title(title: string){
+    this.set('title_for_view', title);
+  }
+
+  /**
+   * site description for a view
+   * @param {string} description
+   */
+  public description(description: string) {
+    this.set('description_for_view', description);
+  }
+
+  /**
    * Renders a view
-   *
-   * @class  AcmsController
-   * @method render
    * @param {e.Request} req
    * @param {e.Response} res
    * @param {string} view
@@ -74,6 +79,12 @@ export class AcmsController{
     res.redirect(path);
   }
 
+  /**
+   * renders data as json output
+   * @param {e.Request} req
+   * @param {e.Response} res
+   * @param data
+   */
   public json(req: Request, res: Response, data: any) {
     let _data;
 

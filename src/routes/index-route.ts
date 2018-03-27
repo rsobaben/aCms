@@ -8,6 +8,10 @@ export class IndexRouter {
     router.get('/',(req: Request, res: Response, next: NextFunction) => {
       Controller.home(req, res, next);
     });
+
+    router.get('/api',(req: Request, res: Response, next: NextFunction) => {
+      Controller.api(req, res, next);
+    });
   //
   }
 }
