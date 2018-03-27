@@ -97,6 +97,15 @@ export class AcmsController{
     res.setHeader('Content-Type', 'application/json');
     res.send(_data);
   }
+
+  /**
+   * Loads a helper into a view
+   * @param {string} label
+   * @param obj
+   */
+  public loadHelper(label: string, obj: any) {
+    this.viewVars[label] = obj;
+  }
 }
 
 /*

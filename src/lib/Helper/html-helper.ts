@@ -166,7 +166,7 @@ export class HtmlHelper{
 
     divAttr = divAttr || {};
     if (!divAttr['class']) divAttr['class'] = 'acms-input';
-
+    div = HtmlHelper.parseAttributes(divAttr);
 
     input = HtmlHelper.input(name, inputAttr, value);
     return `
