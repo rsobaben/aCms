@@ -34,7 +34,7 @@ export class HtmlHelper{
     attributes['type'] = 'text';
     attributes['name'] = name;
     attributes['value'] = value;
-    attributes['id']   = Util.slug(name);
+    attributes['id']   = HtmlHelper.getId(name);
     attrs = HtmlHelper.parseAttributes(attributes);
     return `<input ${attrs} >`;
   }
@@ -53,7 +53,7 @@ export class HtmlHelper{
     attributes['type'] = 'hidden';
     attributes['name'] = name;
     attributes['value'] = value;
-    if (!attributes['id']) attributes['id'] = Util.slug(name);
+    if (!attributes['id']) attributes['id'] = HtmlHelper.getId(name);
 
     attrs = HtmlHelper.parseAttributes(attributes);
     return `<input ${attrs} >`;
@@ -89,9 +89,9 @@ export class HtmlHelper{
     attributes['name'] = name;
     attributes['value'] = 1;
     attributes['checked'] = checked;
-    if (!attributes['id']) attributes['id'] = Util.slug(name);
+    if (!attributes['id']) attributes['id'] = HtmlHelper.getId(name);
 
-    let hidden = HtmlHelper.hidden(name, {id: 'hidden' + attributes['id']});
+    let hidden = HtmlHelper.hidden(name, {id: 'hidden_' + attributes['id']});
 
     attrs = HtmlHelper.parseAttributes(attributes);
     return `<label>${hidden} <input ${attrs}>${label}</label>`;
@@ -161,7 +161,7 @@ export class HtmlHelper{
   public static field(name: string, label:string, inputAttr?: any, value:string='', divAttr?: any){
     let input, div;
     inputAttr = inputAttr || {};
-    if (!inputAttr['id']) inputAttr['id'] = Util.slug(name);
+    if (!inputAttr['id']) inputAttr['id'] = HtmlHelper.getId(name);
     input = HtmlHelper.parseAttributes(inputAttr);
 
     divAttr = divAttr || {};
@@ -174,5 +174,65 @@ export class HtmlHelper{
             <label for="${inputAttr['id']}">${label}</label>
             ${input}
        </div>`;
+  }
+
+  /**
+   * Generates images with srcset, expects all the images in the same folder
+   * @param {string} image
+   * @param {string} _alt
+   * @param {string} _class
+   * @return {string}
+   */
+  public static srcset(image: string, _alt: string='', _class:string = 'acms-image') {
+    let parts  = image.split('.'),
+      ext    = parts.pop(),
+      image2 = parts.join('.') + '@2x.' + ext,
+      image3 = parts.join('.') + '@3x.' + ext;
+    return `
+    <img src="${image}" srcset="${image2} 2x, ${image3} 3x"
+     alt="${_alt}" class="${_class}">
+    `;
+  }
+
+  /**
+   * Generates a select field
+   * @param {string} name
+   * @param {Object} opts
+   * @param selected
+   * @param attributes
+   * @return {string}
+   */
+  public static select(name: string, opts: Object, selected: any, attributes?: any) {
+    let options = '', selAttrs;
+    attributes = attributes || {};
+
+    if (attributes['empty']) {
+      options += `<option value="">${attributes['empty']}</option>\n`;
+      delete attributes['empty'];
+    }
+
+    if (!attributes['id']) attributes['id'] = HtmlHelper.getId(name);
+
+    Object
+      .keys(opts)
+      .forEach((val, ind) => {
+        let sel = selected === ind ? 'selected' : '';
+        options += `<option value="${ind}"${sel}>${val}</option>\n`;
+      });
+
+    selAttrs = HtmlHelper.parseAttributes(attributes);
+    return `<select ${selAttrs}>
+                ${options}
+            </select>
+    `;
+  }
+
+  /**
+   * Gets a suggested id for a name
+   * @param {string} name
+   * @return {string}
+   */
+  public static getId(name: string) {
+    return Util.slug(name);
   }
 }
