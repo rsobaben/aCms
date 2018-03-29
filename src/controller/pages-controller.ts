@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response, Application} from "express";
 import { AcmsController } from '../lib/acms-controller';
 
 export class PagesController extends AcmsController {
-  constructor(){ super();}
+  constructor(app: Application){ super(app); }
 
-  public home(req: Request, res: Response, next: NextFunction) {
+  public home(req: Request, res:  Response, next: NextFunction) {
     this.title('Minha Página Legal');
 
     this.render(req, res, 'pages/home');

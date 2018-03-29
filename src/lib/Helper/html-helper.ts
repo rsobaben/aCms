@@ -33,8 +33,8 @@ export class HtmlHelper{
 
     attributes['type'] = 'text';
     attributes['name'] = name;
-    attributes['value'] = value;
-    attributes['id']   = HtmlHelper.getId(name);
+    if (!attributes['value']) attributes['value'] = value;
+    if (!attributes['id']) attributes['id'] = HtmlHelper.getId(name);
     attrs = HtmlHelper.parseAttributes(attributes);
     return `<input ${attrs} >`;
   }

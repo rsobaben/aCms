@@ -1,6 +1,6 @@
 ///<reference path="./util.ts"/>
 // import
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response, Application } from "express";
 import {Util} from './util';
 
 /** Base class for controller */
@@ -9,12 +9,19 @@ export class AcmsController{
    * Stores data to be used on view
    */
   protected viewVars: any;
-
+  /**
+   * Stores the appplication reference
+   */
+  protected app: Application;
   /**
    * Constructor
    * @constructor
    */
-  constructor() {
+  constructor(app: Application) {
+    /*
+    if (!app) throw MissingAppException('Controller');
+    */
+    this.app = app;
     // sets default values for title and description and a body-class
     this.viewVars = {title_for_view:'', description_for_view:'', body_class: 'acms-body'};
   }
@@ -104,7 +111,7 @@ export class AcmsController{
    * @param obj
    */
   public loadHelper(label: string, obj: any) {
-    this.viewVars[label] = obj;
+    this.app.locals[label] = obj;
   }
 }
 

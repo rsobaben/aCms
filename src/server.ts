@@ -7,7 +7,7 @@ import * as cookieParser from "cookie-parser";
 import * as compression from "compression";
 
 //defined
-import {Dispatcher} from './routes/dispatcher';
+import {Dispatcher} from './routing/dispatcher';
 
 /**
  * The server class
@@ -16,7 +16,6 @@ import {Dispatcher} from './routes/dispatcher';
  */
 export class Server {
   public app: express.Application;
-  private _config: any = {};
 
   /**
    * Returns a new instance of this class
@@ -45,8 +44,10 @@ export class Server {
     // extensions
     this.middlewares();
 
-    // the routes
+    // the routing
     this.routes();
+
+    this.errorHandler();
   }
 
   /**
@@ -70,20 +71,21 @@ export class Server {
 
     //add static paths
     this.app.use(express.static(path.join(__dirname, "../public")));
+  }
 
-
+  private errorHandler() {
     // catch 404 and forward to error handler
-    this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+      let err = new Error('Not Found');
       err.status = 404;
       next(err);
     });
 
-
     this.app.use( (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      if(err.status == 404){
+      if (err.status == 404) {
         res.status(404);
 
-        res.render('not-found', { title: '404 - Acms' });
+        res.render('error/not-found', { title: '404 - Acms' });
       }
       else next(err);
     });
@@ -94,23 +96,30 @@ export class Server {
       if (this.app.get('env') === 'development') {
         res.json({error: err.message, stack: err.stack });
       } else {
-        res.render('server-error', { title: '500 - Acms' });
+        res.render('error/server-error', { title: '500 - Acms' });
       }
     });
 
+  }
+
+  private setLocals(label: string, obj: any) {
+    this.app.locals[label] = obj;
   }
 
   private middlewares() {
     // compression middleware
     this.app.use(compression());
   }
+
   private routes() {
-    let router: express.Router;
-    router = express.Router();
+    let _Router: express.Router, _Dispatcher: Dispatcher;
+
+    _Router = express.Router();
+    _Dispatcher = new Dispatcher(this.app);
 
     // loadRoutes
-    Dispatcher.dispatch(router);
+    _Dispatcher.dispatch(_Router);
 
-    this.app.use(router);
+    this.app.use(_Router);
   }
 }
