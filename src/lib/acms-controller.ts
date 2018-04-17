@@ -2,6 +2,8 @@
 // import
 import { NextFunction, Request, Response, Application } from "express";
 import {Util} from './util';
+import * as _ from 'lodash';
+import {BlocksHelper} from "./Helper/blocks-helper";
 
 /** Base class for controller */
 export class AcmsController{
@@ -24,6 +26,7 @@ export class AcmsController{
     this.app = app;
     // sets default values for title and description and a body-class
     this.viewVars = {title_for_view:'', description_for_view:'', body_class: 'acms-body'};
+    this.loadHelper('View', BlocksHelper);
   }
 
   /**
@@ -57,12 +60,11 @@ export class AcmsController{
 
   /**
    * Renders a view
-   * @param {e.Request} req
    * @param {e.Response} res
    * @param {string} view
    * @param {Object} options
    */
-  public render(req: Request, res: Response, view: string, options?: Object) {
+  public render(res: Response, view: string, options?: Object) {
     if (typeof options === 'undefined') {
       options = {};
     }
@@ -78,11 +80,10 @@ export class AcmsController{
    *
    * @class  AcmsController
    * @method redirect
-   * @param {e.Request} req
    * @param {e.Response} res
    * @param {string} path
    */
-  public redirect(req: Request, res: Response, path: string) {
+  public redirect( res: Response, path: string) {
     res.redirect(path);
   }
 
@@ -92,7 +93,7 @@ export class AcmsController{
    * @param {e.Response} res
    * @param data
    */
-  public json(req: Request, res: Response, data: any) {
+  public json(res: Response, data: any) {
     let _data;
 
     if (data['toJson']) {
@@ -112,6 +113,10 @@ export class AcmsController{
    */
   public loadHelper(label: string, obj: any) {
     this.app.locals[label] = obj;
+  }
+
+  public isPost(req: Request) {
+    return !!_.size(req.body);
   }
 }
 

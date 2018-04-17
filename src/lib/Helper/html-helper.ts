@@ -14,7 +14,7 @@ export class HtmlHelper{
     let a = '';
     Object.keys(attrs)
       .forEach((attr: any) => {
-        a += `${attr}="${attrs[attr]}"`;
+        a += ` ${attr}="${attrs[attr]}"`;
       });
 
     return a;
@@ -31,12 +31,31 @@ export class HtmlHelper{
     let attrs;
     attributes = attributes || {};
 
-    attributes['type'] = 'text';
     attributes['name'] = name;
+    if (!attributes['type']) attributes['type'] = 'text';
     if (!attributes['value']) attributes['value'] = value;
     if (!attributes['id']) attributes['id'] = HtmlHelper.getId(name);
     attrs = HtmlHelper.parseAttributes(attributes);
-    return `<input ${attrs} >`;
+    return `<input${attrs} >`;
+  }
+
+  /**
+   * Generates a textarea
+   * @param {string} name
+   * @param attributes
+   * @param {string} value
+   * @return {string}
+   */
+  public static textarea(name: string, attributes?: any, value:string = ''){
+    let attrs;
+    attributes = attributes || {};
+
+    attributes['name'] = name;
+    if (!attributes['rows']) attributes['rows'] = 5;
+    if (!attributes['cols']) attributes['cols'] = 10;
+    if (!attributes['id']) attributes['id'] = HtmlHelper.getId(name);
+    attrs = HtmlHelper.parseAttributes(attributes);
+    return `<textarea${attrs}>${value}</textarea>`;
   }
 
   /**
@@ -56,7 +75,7 @@ export class HtmlHelper{
     if (!attributes['id']) attributes['id'] = HtmlHelper.getId(name);
 
     attrs = HtmlHelper.parseAttributes(attributes);
-    return `<input ${attrs} >`;
+    return `<input${attrs} >`;
   }
   /**
    * Generates a form button
@@ -70,7 +89,7 @@ export class HtmlHelper{
 
     attributes['type'] = 'submit';
     attrs = HtmlHelper.parseAttributes(attributes);
-    return `<button ${attrs}>${content}</button>`;
+    return `<button${attrs}>${content}</button>`;
   }
 
   /**
@@ -94,7 +113,7 @@ export class HtmlHelper{
     let hidden = HtmlHelper.hidden(name, {id: 'hidden_' + attributes['id']});
 
     attrs = HtmlHelper.parseAttributes(attributes);
-    return `<label>${hidden} <input ${attrs}>${label}</label>`;
+    return `<label>${hidden} <input${attrs}>${label}</label>`;
   }
 
   /**
@@ -110,7 +129,7 @@ export class HtmlHelper{
 
     attributes['href'] = link;
     attrs = HtmlHelper.parseAttributes(attributes);
-    return `<a ${attrs}>${content}</a>`
+    return `<a${attrs}>${content}</a>`
   }
 
   /**
@@ -138,7 +157,7 @@ export class HtmlHelper{
     }
 
     attrs = HtmlHelper.parseAttributes(attributes);
-    return `<form ${attrs}>`;
+    return `<form${attrs}>`;
   }
 
   /**
@@ -168,12 +187,46 @@ export class HtmlHelper{
     if (!divAttr['class']) divAttr['class'] = 'acms-input';
     div = HtmlHelper.parseAttributes(divAttr);
 
-    input = HtmlHelper.input(name, inputAttr, value);
+    if (typeof inputAttr['textarea'] != "undefined") {
+      delete(inputAttr['textarea']);
+      input = HtmlHelper.textarea(name, inputAttr, value);
+    } else {
+      input = HtmlHelper.input(name, inputAttr, value);
+    }
     return `
        <div ${div}>
             <label for="${inputAttr['id']}">${label}</label>
             ${input}
        </div>`;
+  }
+
+  /**
+   * Generates a radio button
+   * @param {string} name
+   * @param {string} label
+   * @param options
+   * @param {string} value
+   * @return {string}
+   */
+  public static radio(name: string, label: string, options: any, value: string='', multiple: boolean = false) {
+    let opts = '', _type = 'radio', cmp = (a:any, b:any) => { return a == b };
+    if (multiple) {
+      _type='checkbox';
+      name+= '[]';
+      cmp = (a, b) => {return b.indexOf(a) >= 0}
+    }
+    Object.keys(options)
+      .forEach((attr: any) => {
+        let val = options[attr], sel = cmp(attr,value) ? ' checked': '';
+        opts += `<label> <input type="${_type}" name="${name}" value="${attr}"${sel}> ${val} </label>`;
+      });
+
+    return `
+      <div class="acms-radio">
+        <strong>${label}</strong>
+        ${opts}
+      </div>
+    `;
   }
 
   /**

@@ -7,10 +7,10 @@ export class PagesController extends AcmsController {
   public home(req: Request, res:  Response, next: NextFunction) {
     this.title('Minha Página Legal');
 
-    this.render(req, res, 'pages/home');
+    this.render(res, 'pages/home');
   }
 
   public api(req: Request, res: Response, next: NextFunction) {
-    this.json(req, res, {response:1, data:[], status:'success'});
+    this.json(res, {response:1, data:[], status:'success'});
   }
 }

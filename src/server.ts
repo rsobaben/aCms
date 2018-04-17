@@ -60,7 +60,15 @@ export class Server {
 
     this.app.disable('x-powered-by');
     //mount logger
-    //this.app.use(logger('dev'));
+    this.app.use(logger((tokens, req, res) => {
+      return [
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms'
+      ].join(' ')
+    }));
 
     //mount json form parser
     this.app.use(bodyParser.json());
@@ -85,7 +93,7 @@ export class Server {
       if (err.status == 404) {
         res.status(404);
 
-        res.render('error/not-found', { title: '404 - Acms' });
+        res.render('error/not-found');
       }
       else next(err);
     });
@@ -96,7 +104,7 @@ export class Server {
       if (this.app.get('env') === 'development') {
         res.json({error: err.message, stack: err.stack });
       } else {
-        res.render('error/server-error', { title: '500 - Acms' });
+        res.render('error/server-error');
       }
     });
 

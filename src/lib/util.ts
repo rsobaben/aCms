@@ -235,4 +235,8 @@ export class Util {
         .replace(/\s+/g, '_') // collapse whitespace and replace by _
         .replace(/_+/g, '_'); // collapse underscore
   }
+
+  public static env() {
+    return process.env.NODE_ENV || 'development';
+  }
 }

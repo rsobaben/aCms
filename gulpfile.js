@@ -5,6 +5,7 @@ const merge = require('merge2');
 let tsProject = ts.createProject({
   declaration: true,
   noImplicitAny: true,
+  target:"ES3",
   //module: 'system',
   //outFile: 'main.js'
 });
